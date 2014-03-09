@@ -9,22 +9,51 @@ using namespace std;
 Scheduler::Scheduler(vector<Task *> tasks)
 {
   tasksToS = tasks;
-  numPairs = tasks.size();
+  numTasks = tasks.size();
+  numPairs = 0;
+  setPairs();
+}
+
+int Scheduler::getNumPairs()
+{
+  return numPairs;
+}
+
+int Scheduler::getNumTasks()
+{
+  return numTasks;
+}
+
+vector<vector<int>> Scheduler::getPairs()
+{
+  return pairs; //TODO: think if this is good, maybe return reference to it?
 }
 
 void Scheduler::setPairs()
 {
-  for (int i=0; i<numPairs; i++)
+  vector<vector<int>>::iterator it;
+  vector<int> opair(2);  //one pair, always containing two integers
+
+  for (int i=0; i<numTasks; i++)
   {
-    for (int j=i+1; j<numPairs; j++)
+    for (int j=i+1; j<numTasks; j++)
     {
       double ei = tasksToS[i]->getEnd();
       double sj = tasksToS[j]->getStart();
       double dist = DistWrapper::dist(tasksToS[i]->getEndPos(),tasksToS[j]->getStartPos());
-    cout << dist;
-      //if(ei+dist(pi,pj) >sj)
+      if(ei+dist >sj)
+      {
+        //the combination of tasks is possible
+        opair[0] = i;
+        opair[1] = j;
+        it = pairs.begin() + numPairs;
+        pairs.insert(it,opair);
+        numPairs++;
+      }
     }
   }
 }
+
+
 
 

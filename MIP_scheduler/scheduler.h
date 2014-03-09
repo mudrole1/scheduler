@@ -13,10 +13,16 @@ class Scheduler
 {
   vector<Task *> tasksToS; //vector of tasks to be schedule
   int numPairs;
+  int numTasks;
   vector<vector<int>> pairs;
   public:
   Scheduler(vector<Task *>);
+  int getNumPairs();
+  int getNumTasks();
+  vector<vector<int>> getPairs();
   void setPairs();
+  
+  
 };
 
 #endif
