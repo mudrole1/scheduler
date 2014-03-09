@@ -30,7 +30,7 @@ Task::Task(double s, double e, double d, string start_pos, string end_pos,bool n
 }
 
 /*constructor without parameter now, automatically set now to false and with vector of tasks, which needs to precede this task*/
-Task::Task(double s, double e, double d, string start_pos, string end_pos, vector<Task*> * pre)
+Task::Task(double s, double e, double d, string start_pos, string end_pos, vector<int> * pre)
 {
   start = s;
   end = e;
@@ -48,7 +48,9 @@ double Task::getEnd() {return end;}
 double Task::getDuration() {return duration;}
 string Task::getStartPos() {return s_pos;}
 string Task::getEndPos() {return e_pos;}
-vector<Task*>* Task::getPrecon() {return precon;}
+bool Task::getNow() {return no;}
+bool Task::getCond() {return cond;}
+vector<int>* Task::getPrecon() {return precon;}
 
 std::ostream& operator<<(std::ostream& os, const Task& t)
 {
@@ -61,10 +63,10 @@ std::ostream& operator<<(std::ostream& os, const Task& t)
     if(t.cond)
     {
       os << "[" << t.start << "," <<t.end << "," << t.duration << "," <<t.s_pos<< "," << t.e_pos  << ",\n";
-      for(int i=0; i< t.precon->size();i++)
+      for(unsigned int i=0; i< t.precon->size();i++)
       {
-        Task * x = t.precon->at(i);
-        os << "prec:"<<*x << ",\n";
+        int x = t.precon->at(i);
+        os << "prec:"<<x << ",\n";
       }
       os <<  "]";
     }

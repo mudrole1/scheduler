@@ -15,19 +15,21 @@ class Task
   string e_pos; //position where the task ends
   bool no;     //if the task must happen now
   bool cond;   //if the task has preceding tasks
-  vector<Task*> * precon; //tasks which needs to happen before this task
+  //vector<Task*> * precon; //tasks which needs to happen before this task
+  vector<int> * precon; //indexes of tasks which needs to happen before this task
 
   public:
   Task (double, double, double, string, string);
   Task (double, double, double, string, string,bool);
-  Task (double, double, double, string, string,vector<Task*> *);
+  Task (double, double, double, string, string,vector<int> *);
   double getStart();
   double getEnd();
   double getDuration();
   string getStartPos();
   string getEndPos();
   bool getNow();
-  vector<Task*>* getPrecon();
+  bool getCond();
+  vector<int>* getPrecon();
   friend ostream& operator<<(ostream&, const Task&);
 };
 

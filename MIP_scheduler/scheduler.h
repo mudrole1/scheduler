@@ -3,6 +3,7 @@
 #ifndef __SCHEDULER_H_INCLUDED__
 #define __SCHEDULER_H_INCLUDED__
 
+#include "scipUser.h"
 //-----------------------------
 // forward declared dependencies (I am using pointer to the Task, I dont need include it)
 class Task;
@@ -21,6 +22,8 @@ class Scheduler
   int getNumTasks();
   vector<vector<int>> getPairs();
   void setPairs();
+  int setPreVar(ScipUser *);
+  int solve();
   
   
 };
