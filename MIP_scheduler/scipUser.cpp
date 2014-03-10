@@ -103,6 +103,7 @@ SCIP_Retcode ScipUser::preVar(int i, int j, SCIP_Real low, SCIP_Real up)
                      false,                  // 
                      0, 0, 0, 0, 0) );
     SCIP_CALL( SCIPaddVar(scip, var) );
+    SCIP_CALL(SCIPprintVar(scip,var,NULL));
     pre_var[0] = var;  
   
   return SCIP_OKAY;

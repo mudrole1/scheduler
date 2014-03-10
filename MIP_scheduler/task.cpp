@@ -6,8 +6,9 @@
 using namespace std;
 
 /*constructor without parameter now, automatically set now to false*/
-Task::Task(double s, double e, double d, string start_pos, string end_pos)
+Task::Task(unsigned int ID, double s, double e, double d, string start_pos, string end_pos)
 {
+  id = ID;
   start = s;
   end = e;
   duration = d;
@@ -18,8 +19,9 @@ Task::Task(double s, double e, double d, string start_pos, string end_pos)
 }
 
 /*constructor with parameter now*/
-Task::Task(double s, double e, double d, string start_pos, string end_pos,bool now)
+Task::Task(unsigned int ID, double s, double e, double d, string start_pos, string end_pos,bool now)
 {
+  id = ID;
   start = s;
   end = e;
   duration = d;
@@ -30,8 +32,9 @@ Task::Task(double s, double e, double d, string start_pos, string end_pos,bool n
 }
 
 /*constructor without parameter now, automatically set now to false and with vector of tasks, which needs to precede this task*/
-Task::Task(double s, double e, double d, string start_pos, string end_pos, vector<int> * pre)
+Task::Task(unsigned int ID, double s, double e, double d, string start_pos, string end_pos, vector<Task*> * pre)
 {
+  id = ID;
   start = s;
   end = e;
   duration = d;
@@ -43,6 +46,7 @@ Task::Task(double s, double e, double d, string start_pos, string end_pos, vecto
 }
 //TODO: think if task with "now" needs to have also preconditions, right now it doesnt
 
+unsigned int Task::getID() {return id;}
 double Task::getStart() {return start;}
 double Task::getEnd() {return end;}
 double Task::getDuration() {return duration;}
@@ -50,29 +54,29 @@ string Task::getStartPos() {return s_pos;}
 string Task::getEndPos() {return e_pos;}
 bool Task::getNow() {return no;}
 bool Task::getCond() {return cond;}
-vector<int>* Task::getPrecon() {return precon;}
+vector<Task*> * Task::getPrecon() {return precon;}
 
 std::ostream& operator<<(std::ostream& os, const Task& t)
 {
   if(t.no)
   {
-    os << "[" << t.start << "," <<t.end << "," << t.duration << "," <<t.s_pos<< "," << t.e_pos << "," << "now" << "]";
+    os << "[" << t.id << t.start << "," <<t.end << "," << t.duration << "," <<t.s_pos<< "," << t.e_pos << "," << "now" << "]";
   }
   else
   {
     if(t.cond)
     {
-      os << "[" << t.start << "," <<t.end << "," << t.duration << "," <<t.s_pos<< "," << t.e_pos  << ",\n";
+      os << "[" << t.id << t.start << "," <<t.end << "," << t.duration << "," <<t.s_pos<< "," << t.e_pos  << ",\n";
       for(unsigned int i=0; i< t.precon->size();i++)
       {
-        int x = t.precon->at(i);
-        os << "prec:"<<x << ",\n";
+        Task * x = t.precon->at(i);
+        os << "prec:"<<*x << ",\n";
       }
       os <<  "]";
     }
     else
     {
-      os << "[" << t.start << "," <<t.end << "," << t.duration << "," <<t.s_pos<< "," << t.e_pos  << "]";
+      os << "[" << t.id << t.start << "," <<t.end << "," << t.duration << "," <<t.s_pos<< "," << t.e_pos  << "]";
     }
   }
   

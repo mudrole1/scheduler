@@ -11,9 +11,9 @@ int main (int argc, char** argv)
 {   
   string s1 = "home";
   string s2 = "office";
-  Task a(0.0, 10.0, 4.0, s1, s2);
-  Task b(0.0, 10.0, 3.0, s2, s1);
-  Task c(0.0, 10.0, 2.0, "school", "shop",true);
+  Task a(1,0.0, 10.0, 4.0, s1, s2);
+  Task b(2,0.0, 10.0, 3.0, s2, s1);
+  Task c(3,0.0, 10.0, 2.0, "school", "shop",true);
 
   vector<Task*> tasks;
 
@@ -25,19 +25,20 @@ int main (int argc, char** argv)
   it = tasks.begin()+2;
   tasks.insert(it,&c);
 
-  vector<int> p(3);
-  p[0]=0;
-  p[1]=1;
-  p[2]=2;
+  Task d(4,0.0, 10.0, 1.0, "shop", "school",&tasks);
   
+  vector<Task*> schedT;
+  it = schedT.begin();
+  schedT.insert(it,&a);
+  it = schedT.begin()+1;
+  schedT.insert(it,&b);
+  it = schedT.begin()+2;
+  schedT.insert(it,&c);
+  it = schedT.begin()+3;
+  schedT.insert(it,&d);
+ 
 
-  Task d(0.0, 10.0, 1.0, "shop", "school",&p);
-  cout << d;
-  
-  it = tasks.begin()+3;
-  tasks.insert(it,&d);
-
-  Scheduler sch(tasks);
+  Scheduler sch(&schedT);
   sch.solve();
 
   return 0;
