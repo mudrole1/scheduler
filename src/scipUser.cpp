@@ -67,6 +67,26 @@ SCIP_Retcode ScipUser::fakeVar()
    return SCIP_OKAY; 
 }
 
+SCIP_Retcode ScipUser::fakeVarReturn(SCIP_VAR * g)
+{
+  /*creating of fake variable, it is always 1, needed in some constraints*/
+   char gn[255];
+   SCIPsnprintf(gn, 255, "g");
+   SCIP_CALL( SCIPcreateVar(scip,
+		&g,
+		gn,
+		1.0,
+		1.0,
+		0.0,
+		SCIP_VARTYPE_INTEGER,
+		true,
+		false,
+		0, 0, 0, 0, 0)); 
+   
+   SCIP_CALL(SCIPaddVar(scip, g)); 
+   return SCIP_OKAY; 
+}
+
 SCIP_Retcode ScipUser::tVar(int num_tasks, vector<SCIP_VAR *> * t_var)
 {
   /* add t variables (execution of task) */
@@ -172,6 +192,7 @@ SCIP_Retcode ScipUser::setLeftCons(vector<Task*> * tasksToS, vector<SCIP_VAR *> 
      char con_name[255];   
      SCIP_VAR* ti;
      SCIP_VAR* tj;
+
      
      ti = t_var->at(i);
      tj = t_var->at(j);
@@ -455,7 +476,8 @@ SCIP_Retcode ScipUser::setFinalCons_long(vector<Task*> * tasksToS, vector<SCIP_V
     );
 
     //creating a constraint tj + dj + dist - ti <= 0
-     SCIP_Real dj = tasksToS->at(j)->getDuration();
+
+      SCIP_Real dj = tasksToS->at(j)->getDuration();
      SCIP_Real distj = DistWrapper::dist(tasksToS->at(j)->getEndPos(),tasksToS->at(i)->getStartPos());; //TODO: call dist function
 
      SCIP_Real vals3[4]; //array of values
@@ -507,8 +529,8 @@ SCIP_Retcode ScipUser::setFinalCons_long(vector<Task*> * tasksToS, vector<SCIP_V
 		&con4,
 		con_name,
 		1, //number of variables
-		vars4,//&vars,
-		vals4,
+		&vars4[0],//&vars,
+		&vals4[0],
 		0.0,//  	lhs,
 		0.0,//  	rhs,
 		true,   // 	initial,
@@ -565,10 +587,12 @@ SCIP_Retcode ScipUser::setFinalCons_long(vector<Task*> * tasksToS, vector<SCIP_V
   return SCIP_OKAY;
 }
 
-SCIP_Retcode ScipUser::scipSolve()
+SCIP_Retcode ScipUser::scipSolve(SCIP_SOL * sol)
 {
   SCIP_CALL( SCIPsolve(scip) );
   //statistic
   SCIP_CALL( SCIPprintBestSol(scip, NULL, FALSE) );
+  //SCIP_SOL* sol = SCIPgetBestSol(scip);
+  // SCIP_CALL(SCIPgetSolVals(scip,sol, 1, &vars, vals[0] ));  	
   return SCIP_OKAY;
 }

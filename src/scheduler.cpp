@@ -336,9 +336,15 @@ int Scheduler::solve()
   if (err != SCIP_OKAY)
     return -1; 
 
-  err = solver->scipSolve();
+//conversion from vector to "array"
+  //SCIP_VAR * array_tvar[1];
+  //array_tvar[0] = t_var->at(0);
+  //SCIP_Real * sol[1];
+  SCIP_SOL * sol = new SCIP_SOL();
+  err = solver->scipSolve(sol);
    if (err != SCIP_OKAY)
     return -1; 
+ 	
     
 
   //call destructor

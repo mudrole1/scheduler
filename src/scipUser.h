@@ -28,6 +28,7 @@ class ScipUser
   SCIP_VAR * getF();
   vector<SCIP_VAR*> * getPreVar();
   SCIP_Retcode fakeVar();
+  SCIP_Retcode fakeVarReturn(SCIP_VAR * g);
   SCIP_Retcode tVar(int, vector<SCIP_VAR *> *);
   SCIP_Retcode preVar(int, int, SCIP_Real, SCIP_Real, int *);
   SCIP_Retcode setTcons(vector<Task*> *, vector<SCIP_VAR *> *, SCIP_VAR *);
@@ -36,7 +37,7 @@ class ScipUser
   SCIP_Retcode setConjCons(int, int, SCIP_CONS*, SCIP_CONS*, SCIP_CONS*);
   SCIP_Retcode setFinalCons(vector<Task*> *, vector<SCIP_VAR *> *, SCIP_VAR *, vector<vector<int>> *);
   SCIP_Retcode setFinalCons_long(vector<Task*> *, vector<SCIP_VAR *> *, SCIP_VAR *, vector<vector<int>> *);
-  SCIP_Retcode scipSolve();
+  SCIP_Retcode scipSolve(SCIP_SOL*);
 };
 
 #endif
