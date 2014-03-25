@@ -38,7 +38,7 @@ vector<vector<int>> Scheduler::getPairs()
 void Scheduler::setPairs()
 {
   vector<vector<int>>::iterator it;
-  vector<int> opair(2);  //one pair, always containing two integers
+  vector<int> opair(3);  //one pair, always containing two integers + order of pair, when setted by preVar method
 
   //setting pairs based on the fact if their windows are overlapping. Thus we need to decide if i precede j, or j precede i
   for (int i=0; i<numTasks; i++)
@@ -54,6 +54,7 @@ void Scheduler::setPairs()
         //the combination of tasks is possible
         opair[0] = i;//tasksToS->at(i)->getID();
         opair[1] = j;//tasksToS->at(j)->getID();
+        opair[2] = -1; // this will be set in preVar method
         it = pairs.begin() + numPairs;
         pairs.insert(it,opair);
         numPairs++;
@@ -101,6 +102,7 @@ int Scheduler::setPreVar(ScipUser * solver)
   pairSet.resize(numPairs,false);
   SCIP_Retcode err;
   int i,j;
+  int * order = new int();
   //setting pre variables, first testing now and conditions
   //if task now exist, we need to set pre variables first
 
@@ -126,7 +128,8 @@ int Scheduler::setPreVar(ScipUser * solver)
           {
             pairSet[j] = true;
             nowSet[k] = true;
-            err = solver->preVar(tid, kid, 1.0, 1.0); //seting low and up to same value will fix it to that
+            err = solver->preVar(tid, kid, 1.0, 1.0,order); //seting low and up to same value will fix it to that
+            pairs.at(j).at(2) = *order;
             if (err != SCIP_OKAY)
               return -1;
           }
@@ -135,7 +138,8 @@ int Scheduler::setPreVar(ScipUser * solver)
           { 
             pairSet[j] = true;
             nowSet[k] = true;
-            err = solver->preVar(kid, tid, 0.0, 0.0); //seting low and up to same value will fix it to that
+            err = solver->preVar(kid, tid, 0.0, 0.0,order); //seting low and up to same value will fix it to that
+            pairs.at(j).at(2) = *order;
             if (err != SCIP_OKAY)
               return -1;
           }
@@ -145,19 +149,21 @@ int Scheduler::setPreVar(ScipUser * solver)
            nowSet[k] = true;
            vector<vector<int>>::iterator it;
            it = pairs.begin()+numPairs;
-           vector<int> opair(2);
+           vector<int> opair(3);
            //to have pair always with smaller number first
            if(i < k)
            {
-             err = solver->preVar(tid, kid, 1.0, 1.0); //seting low and up to same value will fix it to that
+             err = solver->preVar(tid, kid, 1.0, 1.0,order); //seting low and up to same value will fix it to that
              opair[0] = i;//tid;
              opair[1] = k;//kid;
+             opair[2] = *order;
            }
            else
            {
-             err = solver->preVar(kid, tid, 0.0, 0.0); 
+             err = solver->preVar(kid, tid, 0.0, 0.0,order); 
              opair[0] = k;//kid;
              opair[1] = i;//tid;
+             opair[2] = *order;
            }
 
            if (err != SCIP_OKAY)
@@ -204,7 +210,8 @@ int Scheduler::setPreVar(ScipUser * solver)
               //i is the task which has j as precondition, thus preij = 0
               pairSet[j] = true;
               preSet[k] = true;
-              err = solver->preVar(idt, idp, 0.0, 0.0); //seting low and up to same value will fix it to that
+              err = solver->preVar(idt, idp, 0.0, 0.0,order); //seting low and up to same value will fix it to that
+              pairs.at(j).at(2) = *order;
               if (err != SCIP_OKAY)
                 return -1;
             }
@@ -221,7 +228,8 @@ int Scheduler::setPreVar(ScipUser * solver)
               //i is the task which has j as precondition, thus preij = 1
               pairSet[j] = true;
               preSet[k] = true;
-              err = solver->preVar(idp, idt, 1.0, 1.0); //seting low and up to same value will fix it to that
+              err = solver->preVar(idp, idt, 1.0, 1.0,order); //seting low and up to same value will fix it to that
+              pairs.at(j).at(2) = *order;
               if (err != SCIP_OKAY)
                 return -1;
             }
@@ -238,19 +246,21 @@ int Scheduler::setPreVar(ScipUser * solver)
            preSet[k] = true;
            vector<vector<int>>::iterator it;
            it = pairs.begin()+numPairs;
-           vector<int> opair(2);
+           vector<int> opair(3);
 
            if(taskWithCond.at(i) < k)
            {
-             err = solver->preVar(idt, idp, 0.0, 0.0); //seting low and up to same value will fix it to that
+             err = solver->preVar(idt, idp, 0.0, 0.0,order); //seting low and up to same value will fix it to that
              opair[0] = taskWithCond.at(i);//idp;
              opair[1] = k;//idt;
+             opair[2] = *order;
            }
            else
            {
-             err = solver->preVar(idp, idt, 1.0, 1.0); //seting low and up to same value will fix it to that
+             err = solver->preVar(idp, idt, 1.0, 1.0,order); //seting low and up to same value will fix it to that
              opair[0] = k;//idt;
              opair[1] = taskWithCond.at(i);//idp;
+             opair[2] = *order;
            }
 
            if (err != SCIP_OKAY)
@@ -276,7 +286,8 @@ int Scheduler::setPreVar(ScipUser * solver)
     if(!pairSet[j])
     {
       pairSet[j] = true;
-      err = solver->preVar(tasksToS->at(p.at(0))->getID(), tasksToS->at(p.at(1))->getID(), 0.0, 1.0); 
+      err = solver->preVar(tasksToS->at(p.at(0))->getID(), tasksToS->at(p.at(1))->getID(), 0.0, 1.0,order); 
+      pairs.at(j).at(2) = *order;
       if (err != SCIP_OKAY)
         return -1;
      }
@@ -302,6 +313,8 @@ int Scheduler::solve()
 
   SCIP_VAR * g = solver->getF();
 
+
+
 //creating a vector for variables
   vector<SCIP_VAR *> * t_var = new vector<SCIP_VAR *>(numTasks,(SCIP_VAR*) NULL); 
   err = solver->tVar(numTasks,t_var);
@@ -315,6 +328,11 @@ int Scheduler::solve()
 
 //create constraints for starting and ending time
   err = solver->setTcons(tasksToS, t_var, g);
+  if (err != SCIP_OKAY)
+    return -1; 
+
+//for all pairs we need to set condition
+  err = solver->setFinalCons_long(tasksToS, t_var, g, &pairs);
   if (err != SCIP_OKAY)
     return -1; 
 

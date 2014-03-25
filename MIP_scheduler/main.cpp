@@ -11,9 +11,9 @@ int main (int argc, char** argv)
 {   
   string s1 = "home";
   string s2 = "office";
-  Task a(10,0.0, 10.0, 4.0, s1, s2);
-  Task b(20,0.0, 10.0, 3.0, s2, s1);
-  Task c(30,0.0, 10.0, 2.0, "school", "shop",true);
+  Task a(1,0.0, 50.0, 4.0, s1, s2);
+  Task b(2,0.0, 50.0, 3.0, s2, s1);
+  Task c(3,0.0, 50.0, 2.0, "school", "shop",true);
 
   vector<Task*> tasks;
 
@@ -25,7 +25,7 @@ int main (int argc, char** argv)
   it = tasks.begin()+2;
   tasks.insert(it,&c);
 
-  Task d(4,0.0, 10.0, 1.0, "shop", "school",&tasks);
+  Task d(4,0.0, 50.0, 1.0, "shop", "school",&tasks);
   
   vector<Task*> schedT;
   it = schedT.begin();
