@@ -1,8 +1,19 @@
 scheduler
 =========
-1. Download Mixed Integer Programming solver: http://scip.zib.de/download.php?fname=scipoptsuite-3.1.0.tgz 
-I prepared it with version 3.0.2., I will test it later with this version (just notice that new one is published)
-2. Clone the repository to the "example" folder
+1. Clone the repository to your structure
+2. Download Mixed Integer Programming solver: http://scip.zib.de/download.php?fname=scipoptsuite-3.0.2.tgz
+3. Unpack it to the cloned repository
+4. Follow the installation instructions: http://scip.zib.de/doc-3.0.2/html/MAKE.shtml
+5. Rewrite the file scipoptsuite-3.0.2/scip-3.0.2/make/make.project by the file from cloned repository (setting compiler to follow c++11 standard)
+6. Run "make" in the cloned repository to compiled the code
+7. Go to the bin folder and run main to observed behaviour
+
+--------------------------------------------
+TODO:
+1. Test the code with newer SCIP version
+2. Solve the bug that scheduler will handle preconditions of task
+3. Simplify the equations (if the pre is set to one, we dont need to have both equations)
+4. Run more tests
 
 
 
