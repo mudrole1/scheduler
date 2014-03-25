@@ -12,9 +12,10 @@ scheduler
 TODO:
 ==============
 1. Test the code with newer SCIP version
-2. Solve the bug that scheduler will handle preconditions of task
-3. Simplify the equations (if the pre is set to one, we dont need to have both equations)
-4. Run more tests
+2. Solve the bug when saving solution
+3. Solve the bug that scheduler will handle preconditions of task
+4. Simplify the equations (if the pre is set to one, we dont need to have both equations)
+5. Run more tests
 
 
 
