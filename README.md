@@ -9,13 +9,20 @@ scheduler
 7. Go to the bin folder and run main to observed behaviour
 
 --------------------------------------------
+How to use it
+==============
+See the main.cpp for example, you should create a vector of pointers to tasks. Then create a new scheduler object passing the address of the vector with tasks
+Scheduler sch(&schedT);
+
+Then, method solve return true, if the solution is found and set execution_time in each tasks. Otherwise return false.
+
+bool worked = sch.solve();
+
 TODO:
 ==============
-1. Test the code with newer SCIP version
-2. Solve the bug when saving solution
-3. Solve the bug that scheduler will handle preconditions of task
-4. Simplify the equations (if the pre is set to one, we dont need to have both equations)
-5. Run more tests
+1. Solve the bug that scheduler will handle preconditions of task
+2. Simplify the equations (if the pre is set to one, we dont need to have both equations)
+3. Run more tests
 
 
 
