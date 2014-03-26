@@ -25,7 +25,7 @@ int main (int argc, char** argv)
   it = tasks.begin()+2;
   tasks.insert(it,&c);
 
-  Task d(4,0.0, 50.0, 1.0, "shop", "school",&tasks);
+  Task d(4,0.0, 50.0, 1.0, "shop", "school");//,&tasks);
   
   vector<Task*> schedT;
   it = schedT.begin();
@@ -39,7 +39,13 @@ int main (int argc, char** argv)
  
 
   Scheduler sch(&schedT);
-  sch.solve();
+  bool worked = sch.solve();
+
+  cout<< "Schedule found" << worked << "\n";
+  for(int i=0;i<4;i++)
+  {
+    cout<< schedT[i]->getExecTime() << "\n";
+  }
 
   return 0;
 

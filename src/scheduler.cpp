@@ -297,7 +297,7 @@ int Scheduler::setPreVar(ScipUser * solver)
   return 0;
 }
 
-int Scheduler::solve()
+bool Scheduler::solve()
 {
   SCIP_Retcode err;
   vector<bool> pairUsed;
@@ -337,20 +337,20 @@ int Scheduler::solve()
     return -1; 
 
 //conversion from vector to "array"
-  //SCIP_VAR * array_tvar[1];
-  //array_tvar[0] = t_var->at(0);
-  //SCIP_Real * sol[1];
-  SCIP_SOL * sol = new SCIP_SOL();
-  err = solver->scipSolve(sol);
+  SCIP_VAR * array_tvar[numTasks];
+  for(int i=0; i<numTasks; i++)
+    array_tvar[i] = t_var->at(i);
+
+  bool * worked = new bool();
+
+  err = solver->scipSolve(tasksToS, array_tvar, worked);
    if (err != SCIP_OKAY)
     return -1; 
- 	
-    
 
   //call destructor
   delete solver;
 
-  return 0;
+  return *worked;
 }
 
 

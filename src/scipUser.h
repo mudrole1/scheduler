@@ -37,7 +37,7 @@ class ScipUser
   SCIP_Retcode setConjCons(int, int, SCIP_CONS*, SCIP_CONS*, SCIP_CONS*);
   SCIP_Retcode setFinalCons(vector<Task*> *, vector<SCIP_VAR *> *, SCIP_VAR *, vector<vector<int>> *);
   SCIP_Retcode setFinalCons_long(vector<Task*> *, vector<SCIP_VAR *> *, SCIP_VAR *, vector<vector<int>> *);
-  SCIP_Retcode scipSolve(SCIP_SOL*);
+  SCIP_Retcode scipSolve(vector<Task*> *, SCIP_VAR *[],bool*);
 };
 
 #endif

@@ -26,7 +26,7 @@ class Scheduler
   int setPreVar(ScipUser *);
   int findTaskNow();
   vector<int> findConditions();
-  int solve();
+  bool solve();
   
   
 };

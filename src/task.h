@@ -18,6 +18,7 @@ class Task
   bool no;     //if the task must happen now
   bool cond;   //if the task has preceding tasks
   vector<Task*> * precon; //tasks which needs to happen before this task
+  double exec_time;
 
   public:
   Task (unsigned int, double, double, double, string, string);
@@ -32,6 +33,8 @@ class Task
   bool getNow();
   bool getCond();
   vector<Task*> * getPrecon();
+  double getExecTime();
+  void setExecTime(double);
   friend ostream& operator<<(ostream&, const Task&);
 };
 

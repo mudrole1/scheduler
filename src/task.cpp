@@ -55,6 +55,8 @@ string Task::getEndPos() {return e_pos;}
 bool Task::getNow() {return no;}
 bool Task::getCond() {return cond;}
 vector<Task*> * Task::getPrecon() {return precon;}
+double Task::getExecTime() {return exec_time;}
+void Task::setExecTime(double execTime) {exec_time = execTime;}
 
 std::ostream& operator<<(std::ostream& os, const Task& t)
 {

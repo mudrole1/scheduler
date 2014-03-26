@@ -587,12 +587,32 @@ SCIP_Retcode ScipUser::setFinalCons_long(vector<Task*> * tasksToS, vector<SCIP_V
   return SCIP_OKAY;
 }
 
-SCIP_Retcode ScipUser::scipSolve(SCIP_SOL * sol)
+SCIP_Retcode ScipUser::scipSolve(vector<Task*> * tasksToS, SCIP_VAR * vars[], bool * worked)
 {
+  int num_tasks = tasksToS -> size();
+
+  SCIP_Real vals[num_tasks]; //array to save execution times
+
   SCIP_CALL( SCIPsolve(scip) );
-  //statistic
   SCIP_CALL( SCIPprintBestSol(scip, NULL, FALSE) );
-  //SCIP_SOL* sol = SCIPgetBestSol(scip);
-  // SCIP_CALL(SCIPgetSolVals(scip,sol, 1, &vars, vals[0] ));  	
+  SCIP_SOL* sol = SCIPgetBestSol(scip);
+  
+  if(sol == NULL)
+  {
+    *worked = false;
+    for(int i=0; i < num_tasks; i++)
+    {
+      tasksToS->at(i)->setExecTime(-1.0);
+    }
+  }
+  else
+  {
+    *worked = true;
+    SCIP_CALL(SCIPgetSolVals(scip,sol, num_tasks, vars, vals)); 
+    for(int i=0; i < num_tasks; i++)
+    {
+      tasksToS->at(i)->setExecTime(vals[i]);
+    }
+  }	
   return SCIP_OKAY;
 }
