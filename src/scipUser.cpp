@@ -25,11 +25,6 @@ ScipUser::ScipUser()
   catchEr = SCIPsetIntParam(scip, "display/verblevel", 5);
   /* create empty problem */
   catchEr = SCIPcreateProb(scip, "Scheduler", 0, 0, 0, 0, 0, 0, 0);
-
-  f= (SCIP_VAR*)NULL;
-  pre_var = new vector<SCIP_VAR *>(0,(SCIP_VAR*) NULL); 
-  num_preVar = 0;
-
 }
 
 ScipUser::~ScipUser()
@@ -41,49 +36,6 @@ ScipUser::~ScipUser()
 SCIP_Retcode ScipUser::getEr()
 {
   return catchEr;
-}
-
-SCIP_VAR * ScipUser::getF() {return f;}
-
-vector<SCIP_VAR*> * ScipUser::getPreVar() {return pre_var;}
-
-SCIP_Retcode ScipUser::fakeVar()
-{
-  /*creating of fake variable, it is always 1, needed in some constraints*/
-   char fn[255];
-   SCIPsnprintf(fn, 255, "f");
-   SCIP_CALL( SCIPcreateVar(scip,
-		&f,
-		fn,
-		1.0,
-		1.0,
-		0.0,
-		SCIP_VARTYPE_INTEGER,
-		true,
-		false,
-		0, 0, 0, 0, 0));  
-   SCIP_CALL(SCIPaddVar(scip, f)); 
-   return SCIP_OKAY; 
-}
-
-SCIP_Retcode ScipUser::fakeVarReturn(SCIP_VAR * g)
-{
-  /*creating of fake variable, it is always 1, needed in some constraints*/
-   char gn[255];
-   SCIPsnprintf(gn, 255, "g");
-   SCIP_CALL( SCIPcreateVar(scip,
-		&g,
-		gn,
-		1.0,
-		1.0,
-		0.0,
-		SCIP_VARTYPE_INTEGER,
-		true,
-		false,
-		0, 0, 0, 0, 0)); 
-   
-   SCIP_CALL(SCIPaddVar(scip, g)); 
-   return SCIP_OKAY; 
 }
 
 SCIP_Retcode ScipUser::tVar(int num_tasks, vector<SCIP_VAR *> * t_var)
@@ -114,34 +66,7 @@ SCIP_Retcode ScipUser::tVar(int num_tasks, vector<SCIP_VAR *> * t_var)
    return SCIP_OKAY;
 }
 
-SCIP_Retcode ScipUser::preVar(int i, int j, SCIP_Real low, SCIP_Real up, int * order)
-{
-  /* add one pre_ij variable (pre_ij = 1 if a task i precede task j) */
-   char var_name[255];
-   vector<SCIP_VAR*>::iterator it;
-   it = pre_var-> begin()+num_preVar;
-   SCIPsnprintf(var_name, 255, "pre_i%d_j%d", i,j);
-   SCIP_VAR* var;
-   SCIP_CALL( SCIPcreateVar(scip,
-                     &var,                   // returns new index
-                     var_name,               // name
-                     low,                    // lower bound
-                     up,                    // upper bound
-                     0.0,         // objective ??
-                     SCIP_VARTYPE_BINARY,   // variable type
-                     true,                   // initial
-                     false,                  // 
-                     0, 0, 0, 0, 0) );
-    SCIP_CALL( SCIPaddVar(scip, var) );
-    *order = num_preVar;
-    num_preVar++;
-    pre_var->insert(it,var);  
-
-  
-  return SCIP_OKAY;
-}
-
-SCIP_Retcode ScipUser::setTcons(vector<Task*> * tasksToS, vector<SCIP_VAR *> * t_var, SCIP_VAR * g)
+SCIP_Retcode ScipUser::setTcons(vector<Task*> * tasksToS, vector<SCIP_VAR *> * t_var)
 {
   /* add constraint s<= t + d <=e */
    char con_name[255];
@@ -234,7 +159,7 @@ SCIP_Retcode ScipUser::setTcons(vector<Task*> * tasksToS, vector<SCIP_VAR *> * t
 }
 
 
-SCIP_Retcode ScipUser::setFinalCons_long(vector<Task*> * tasksToS, vector<SCIP_VAR *> * t_var, SCIP_VAR * g, vector<vector<int>> * pairs)
+SCIP_Retcode ScipUser::setFinalCons(vector<Task*> * tasksToS, vector<SCIP_VAR *> * t_var, vector<vector<int>> * pairs)
 {
   char con_name[255]; 
   for(int x=0; x<(int)pairs->size(); x++)
@@ -242,7 +167,7 @@ SCIP_Retcode ScipUser::setFinalCons_long(vector<Task*> * tasksToS, vector<SCIP_V
      vector<int> p = pairs->at(x);
      int i = p.at(0);
      int j = p.at(1);
-     int k = p.at(2);
+     //int k = p.at(2);
      int type = p.at(3);
 
      SCIP_VAR* ti;
