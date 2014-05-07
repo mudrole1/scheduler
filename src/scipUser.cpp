@@ -159,7 +159,7 @@ SCIP_Retcode ScipUser::setTcons(vector<Task*> * tasksToS, vector<SCIP_VAR *> * t
 }
 
 
-SCIP_Retcode ScipUser::setFinalCons(vector<Task*> * tasksToS, vector<SCIP_VAR *> * t_var, vector<vector<int>> * pairs)
+SCIP_Retcode ScipUser::setFinalCons(vector<Task*> * tasksToS, vector<SCIP_VAR *> * t_var, vector<vector<int>> * pairs, double maxDist)
 {
   char con_name[255]; 
   for(int x=0; x<(int)pairs->size(); x++)
@@ -183,8 +183,24 @@ SCIP_Retcode ScipUser::setFinalCons(vector<Task*> * tasksToS, vector<SCIP_VAR *>
      {   
        //creating a constraint ti + di + dist - tj <= 0     
        SCIP_Real d = tasksToS->at(i)->getDuration();
-       SCIP_Real dist = DistWrapper::dist(tasksToS->at(i)->getEndPos(),tasksToS->at(j)->getStartPos());
-
+       SCIP_Real dist;
+       if(tasksToS->at(i)->getEndPos().empty()) //if first task has no location, that the travel to following task might take maxDist;
+       {
+         dist = maxDist;
+       }
+       else if(tasksToS->at(j)->getStartPos().empty()) //if second task in pair has no location, travel dist is zero, should start immediately
+       {
+         dist = 0; 
+       }
+       else
+       {        
+         dist = DistWrapper::dist(tasksToS->at(i)->getEndPos(),tasksToS->at(j)->getStartPos());
+       }
+        //two following tasks with no loc
+       if((tasksToS->at(i)->getEndPos().empty())&&(tasksToS->at(j)->getStartPos().empty()))
+       { 
+         dist =0;
+       }
        SCIP_Real vals[2]; //array of values
        vals[0] = 1;
        vals[1] = -1; 
@@ -223,7 +239,24 @@ SCIP_Retcode ScipUser::setFinalCons(vector<Task*> * tasksToS, vector<SCIP_VAR *>
        //creating a constraint tj + dj + dist - ti <= 0
 
        SCIP_Real dj = tasksToS->at(j)->getDuration();
-       SCIP_Real distj = DistWrapper::dist(tasksToS->at(j)->getEndPos(),tasksToS->at(i)->getStartPos());; 
+       SCIP_Real distj;
+       if(tasksToS->at(j)->getEndPos().empty()) //if first task has no location, that the travel to following task might take maxDist;
+       {
+         distj = maxDist;
+       }
+       else if(tasksToS->at(i)->getStartPos().empty()) //if second task in pair has no location, travel dist is zero, should start immediately
+       {
+         distj = 0; 
+       }
+       else
+       {        
+         distj = DistWrapper::dist(tasksToS->at(j)->getEndPos(),tasksToS->at(i)->getStartPos());
+       }
+       if((tasksToS->at(j)->getEndPos().empty())&&(tasksToS->at(i)->getStartPos().empty()))
+       {
+         distj = 0;
+       }
+       
 
        SCIP_Real vals3[2]; //array of values
        vals3[0] = 1;

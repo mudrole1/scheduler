@@ -36,6 +36,27 @@ vector<vector<int>> Scheduler::getPairs()
   return pairs; //TODO: think if this is good, maybe return reference to it?
 }
 
+double Scheduler::getMaxDist()
+{
+  double max=0;
+  double dist;
+  for(int i=0; i< numTasks; i++)
+  {
+    for(int j=0; j< numTasks; j++)
+    {
+      if(i != j)
+      {
+        dist = DistWrapper::dist(tasksToS->at(i)->getEndPos(),tasksToS->at(j)->getStartPos());
+        if(dist>max)
+        {  
+          max = dist; 
+        }
+      }
+    }
+  }
+  return max;
+}
+
 void Scheduler::setPairs()
 {
   vector<vector<int>>::iterator it;
@@ -375,6 +396,7 @@ bool Scheduler::solve()
   if (err != SCIP_OKAY)
     return -1;
 
+
 //creating a vector for variables
   vector<SCIP_VAR *> * t_var = new vector<SCIP_VAR *>(numTasks,(SCIP_VAR*) NULL); 
   err = solver->tVar(numTasks,t_var);
@@ -392,8 +414,9 @@ bool Scheduler::solve()
   if (err != SCIP_OKAY)
     return -1; 
 
+  double maxDist = getMaxDist();
 //for all pairs we need to set condition
-  err = solver->setFinalCons(tasksToS, t_var, &pairs);
+  err = solver->setFinalCons(tasksToS, t_var, &pairs, maxDist);
   if (err != SCIP_OKAY)
     return -1; 
 

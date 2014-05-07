@@ -22,6 +22,7 @@ class Scheduler
   int getNumPairs();
   int getNumTasks();
   vector<vector<int>> getPairs();
+  double getMaxDist();
   void setPairs();
   int setPreVar(ScipUser *);
   int findTaskNow();

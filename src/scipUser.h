@@ -24,7 +24,7 @@ class ScipUser
   SCIP_Retcode getEr();
   SCIP_Retcode tVar(int, vector<SCIP_VAR *> *);
   SCIP_Retcode setTcons(vector<Task*> *, vector<SCIP_VAR *> *);
-  SCIP_Retcode setFinalCons(vector<Task*> *, vector<SCIP_VAR *> *, vector<vector<int>> *);
+  SCIP_Retcode setFinalCons(vector<Task*> *, vector<SCIP_VAR *> *, vector<vector<int>> *, double);
   SCIP_Retcode scipSolve(vector<Task*> *, SCIP_VAR *[],bool*);
 };
 
