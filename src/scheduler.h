@@ -8,6 +8,7 @@
 // forward declared dependencies (I am using pointer to the Task, I dont need include it)
 class Task;
 class ScipUser;
+class Pairs;
 
 using namespace std;
 
@@ -23,7 +24,6 @@ class Scheduler
   int getNumTasks();
   vector<vector<int>> getPairs();
   double getMaxDist();
-  void setPairs();
   int setPreVar(ScipUser *);
   int findTaskNow();
   vector<int> findConditions();

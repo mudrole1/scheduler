@@ -25,7 +25,7 @@
 # paths
 #-----------------------------------------------------------------------------
 
-SCIPDIR         =      ../scipoptsuite-3.0.2/scip-3.0.2
+SCIPDIR         =      ../..
 
 
 #-----------------------------------------------------------------------------
@@ -41,7 +41,7 @@ include $(SCIPDIR)/make/make.project
 #-----------------------------------------------------------------------------
 
 MAINNAME	=	main
-MAINOBJ		=	main.o task.o scheduler.o distWrapper.o scipUser.o
+MAINOBJ		=	main.o task.o scheduler.o distWrapper.o scipUser.o pairs.o
 MAINSRC		=	$(addprefix $(SRCDIR)/,$(MAINOBJ:.o=.cpp))
 MAINDEP		=	$(SRCDIR)/depend.cppmain.$(OPT)
 
