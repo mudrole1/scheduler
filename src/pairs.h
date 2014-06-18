@@ -18,6 +18,8 @@ class Pairs
 public:
   Pairs(vector<Task *> *);
   int setPairs();
+  int setPairs_BC();
+  int setPairs_mine();
   void getPairs(vector<vector<int>> *);
 };
 

@@ -280,7 +280,7 @@ int Scheduler::setPreVar(ScipUser * solver)
   return 0;
 }
 
-bool Scheduler::solve()
+bool Scheduler::solve(int version)
 {
   SCIP_Retcode err;
   vector<bool> pairUsed;
@@ -291,7 +291,11 @@ bool Scheduler::solve()
     return -1;
 
   Pairs * pr = new Pairs(tasksToS);
-  numPairs = pr->setPairs();
+  if(version==1) //Brian Coltin
+    numPairs = pr->setPairs_BC();
+  if(version==2) //mine
+    numPairs = pr->setPairs_mine();
+
   pr->getPairs(&pairs);
 
 //creating a vector for variables

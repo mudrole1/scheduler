@@ -19,6 +19,49 @@ void Pairs::getPairs(vector<vector<int>> * rp)
   *rp = pairs;
 }
 
+int Pairs::setPairs_BC()
+{
+  vector<vector<int>>::iterator it;
+  vector<int> opairs(4);  //one pair, always containing two integers + order of pair, when setted by preVar method + the type of pair
+
+  //setting pairs based on the fact if their windows are overlapping. Thus we need to decide if i precede j, or j precede i
+  for (int i=0; i<numTasks; i++)
+  {
+    for (int j=i+1; j<numTasks; j++)
+    {
+
+      bool set = false;
+      double ei = tasksToS->at(i)->getEnd();
+      double si = tasksToS->at(i)->getStart();
+      double ej = tasksToS->at(j)->getEnd();
+      double sj = tasksToS->at(j)->getStart();
+      //double dist = DistWrapper::dist(tasksToS->at(i)->getEndPos(),tasksToS->at(j)->getStartPos());
+
+      //I before J, or I after J there is no overlapp and we dont want to add the pair.
+      //for other cases, we would like to add some constraint
+       
+      //the combination of tasks is possible
+      if((ei>sj)||(ej>si))
+      {
+         opairs[0] = i;
+         opairs[1] = j;
+         opairs[2] = -1;
+         opairs[3] = 2;   
+         set = true;     
+      }
+      
+       if(set)
+       {
+         it = pairs.begin() + numPairs;
+         pairs.insert(it,opairs);
+         numPairs++;
+         //cout << opairs[0] << ";" << opairs[1] << opairs[3] << "\n";
+       }
+    }
+  }
+  return numPairs;
+}
+
 int Pairs::setPairs()
 {
   vector<vector<int>>::iterator it;
@@ -204,8 +247,16 @@ int Pairs::setPairs_mine()
       double sj = j->getStart();
       double dj = j->getDuration();
 
+      double distij = DistWrapper::dist(i->getEndPos(),j->getStartPos());
+      double distji = DistWrapper::dist(j->getEndPos(),i->getStartPos());
 
+      double time_ij = si+di+distij - sj;
+      double time_ji = sj+dj+distji - si;
 
+      if (time_ij <0)
+        time_ij = 0;
+      if (time_ji <0)
+        time_ji = 0;
        
       //the combination of tasks is possible
       opairs[0] = a;//tasksToS->at(i)->getID();
@@ -239,8 +290,16 @@ int Pairs::setPairs_mine()
           
           else if (ei==ej)//equals
           {
-            opairs[3]=decidedInterval(i,j,1); //this should be 2, but if intervals are same and we are not using any priority, it makes no sense
-                         //to chose ordering, thus fixing it for task i precedes task j
+            /*
+            this should be 2, but if intervals are same and we are not using any priority, 
+            it makes no sense to chose ordering, 
+            however, dist(i,j) or dist(j,i) can be different and they might change the ordering. 
+            Thus, we decide here which is the best ordering */
+            if(time_ij < time_ji)
+              opairs[3]=decidedInterval(i,j,2);
+            else
+              opairs[3]=decidedInterval(i,j,2);
+           
             set = true;
           }
         }
