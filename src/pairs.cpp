@@ -37,11 +37,14 @@ int Pairs::setPairs_BC()
       double sj = tasksToS->at(j)->getStart();
       //double dist = DistWrapper::dist(tasksToS->at(i)->getEndPos(),tasksToS->at(j)->getStartPos());
 
+      double overlap = min(ei,ej) - max(si,sj);
+
       //I before J, or I after J there is no overlapp and we dont want to add the pair.
       //for other cases, we would like to add some constraint
        
       //the combination of tasks is possible
-      if((ei>sj)||(ej>si))
+      
+      if(overlap > 0)
       {
          opairs[0] = i;
          opairs[1] = j;
@@ -188,13 +191,14 @@ int decidedInterval(Task * i, Task * j, int logOrder)
 
   double overlap = min(ei,ej) - max(si,sj);
 
-  if((ij>=overlap)&&(ji>=overlap)) //both combinations are possible
+  
+  if((ij<=overlap)&&(ji<=overlap)) //both combinations are possible
   {
     return 2;
   }
   else
   {
-    if(ij>=overlap) //only combination that i precedes j is possbile during overlap
+    if(ij<=overlap) //only combination that i precedes j is possbile during overlap
     {
       if(logOrder==1) //if logic order correspondence to this, return it
       {
@@ -205,7 +209,7 @@ int decidedInterval(Task * i, Task * j, int logOrder)
         return 2;
       }
     }
-    else if(ji>=overlap) //only combination that j precedes i
+    else if(ji<=overlap) //only combination that j precedes i
     {
       if(logOrder==0) 
       {
