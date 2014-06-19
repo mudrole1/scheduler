@@ -4,6 +4,7 @@
 #include <math.h>
 #include "task.h"
 #include "scheduler.h"
+#include <fstream>
 
 using namespace std;
 
@@ -23,12 +24,15 @@ int main (int argc, char** argv)
 
   int num_prob1 =0;
   int num_prob2 =0;
-
-  //for(int x=0; x<100; x++) 
-  //{
+  ofstream myfile;
+  myfile.open ("../src/tasks.txt");
+  myfile << "start, end, duration, assigned time\n";
+  srand(time(NULL));
+  for(int x=0; x<100; x++) 
+  {
   int mind = 2; //minimal duration of tasks
   int maxd = 30;  //maximal duration of tasks
-  int maxw = 10; //maximum waiting time between two tasks
+  int maxw = 20; //maximum waiting time between two tasks
   int maxs = 240; //maximum window size
   int taken=0;
   int d=0; //duration of task
@@ -41,7 +45,7 @@ int main (int argc, char** argv)
   
   vector<Task*> tasks;
 
-  srand(time(NULL));
+
   for(int i=0;i<task_count;i++)
   {			
     w =w+d+(int) round(rand() % maxw) +1;
@@ -52,12 +56,17 @@ int main (int argc, char** argv)
     taken=w-s + d;
     e=(int) round(rand() % (maxs))+taken+s+1;
     sum=sum+w;
-    cout << s << ";" << e << ";" << d << ";" << w << "\n";
+    myfile << s << ";" << e << ";" << d << ";" << w << "\n";
     tasks.push_back(new Task(i, s, e, d, s1, s2));
+    if((i>0)&&(pw>=w))
+      num_prob1++;
+
+    pw = w+d;
   }
 		
+  myfile << "\n";
   Scheduler scheduler(&tasks);
-  bool worked = scheduler.solve(1);
+  bool worked = scheduler.solve();
 
   bool sorted = false;
   Task * pom = (Task*)NULL; 
@@ -69,7 +78,7 @@ int main (int argc, char** argv)
       cout<< "Is start time "<<tp->getExecTime() << " after start? + dur:" << tp->getDuration() << ":" 
        << (tp->getExecTime() >= tp->getStart()) << "\n";
     } 
-   /* while(!sorted)
+    /*while(!sorted)
     {
       sorted = true;
       for(int i=0;i<task_count-1;i++)
@@ -97,17 +106,13 @@ int main (int argc, char** argv)
        }
     }*/
   }
-//}
-
-
-  worked = scheduler.solve(2);
-   if(worked)  {
-    cout<< "Schedule found" << worked << "\n";
-    for(auto & tp : tasks) {
-      cout<< "Is start time "<<tp->getExecTime() << " after start? + dur:" << tp->getDuration() << ":" 
-       << (tp->getExecTime() >= tp->getStart()) << "\n";
-    } 
+  else {
+    cout<< "No schedule found"<< endl;
+    num_prob2++;
   }
+}
+myfile.close();
+cout << "Problems:" << num_prob1 << ";" << num_prob2 << "\n";
   return 0;
 
 }
