@@ -20,6 +20,7 @@ public:
   int setPairs();
   int setPairs_BC();
   int setPairs_mine();
+  int setPairs_new();
   void getPairs(vector<vector<int>> *);
 };
 

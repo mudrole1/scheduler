@@ -297,6 +297,8 @@ bool Scheduler::solve(int version)
     numPairs = pr->setPairs_mine();
   if(version==3) //robot version
     numPairs = pr->setPairs();
+  if(version==4)
+    numPairs = pr->setPairs_new();
 
   pr->getPairs(&pairs);
 
